@@ -1,9 +1,10 @@
 # Import python packages
 import streamlit as st
-# New section to display smootheifroot nutrition infomation
-import requests
 #from snowflake.snowpark.context import get_active_session
 from snowflake.snowpark.functions import col
+# New section to display smootheifroot nutrition infomation
+import requests
+import pandas as pd
 
 # Write directly to the app
 st.title("Customize Your Smoothie:cup_with_straw:")
@@ -25,7 +26,12 @@ cnx = st.connection("snowflake")
 #session = get_active_session()
 session = cnx.session()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
-st.dataframe(data=my_dataframe, use_container_width=True)
+#st.dataframe(data=my_dataframe, use_container_width=True)
+#st.stop()
+
+# Convert the Snowpark Dataflame to a Pandas Dataframe so we can user the LOC function
+pd_df = my_dataframe.to_pandas()
+st.dataframe(pd_df)
 st.stop()
 
 ingredients_list = st.multiselect(
